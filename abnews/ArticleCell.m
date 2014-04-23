@@ -6,6 +6,7 @@
 //  Copyright (c) 2014年 endo.news. All rights reserved.
 //
 
+#define LOG false
 #import "ArticleCell.h"
 #import "TextViewController.h"
 
@@ -40,8 +41,11 @@
    withArticleData:(ArticleData *)_articleData{
     self = [super initWithFrame:frame];
     self.articleData = _articleData;
+    
+#if LOG
     NSLog(@"ArticleCell initWithArticleData : %@",
           self.articleData.title);
+#endif
     
     if(self){
         [self initializerWithText:self.articleData];

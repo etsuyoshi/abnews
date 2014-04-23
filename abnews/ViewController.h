@@ -12,6 +12,8 @@
 //#import "ArticleCell.h"
 #import "BackgroundView.h"
 
+#import "Preservation.h"
+
 //#import "Mecab.h"
 //#import "Node.h"
 

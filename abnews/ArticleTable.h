@@ -22,6 +22,7 @@ typedef NS_ENUM(NSInteger, TableType) {
 
 @interface ArticleTable : UIView
 
+@property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) TableType tableType;
 @property (nonatomic) UIColor *cellColor;
 @property (nonatomic) NSMutableArray *arrCells;

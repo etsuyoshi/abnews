@@ -13,17 +13,22 @@
 @synthesize tableType = _tableType;
 @synthesize cellColor = _cellColor;
 @synthesize arrCells = _arrCells;
-
+@synthesize scrollView = _scrollView;
 
 int intervalCell;
 int widthCell;
 int heightCell;
 
+
+
 -(id)initWithType:(TableType)tableType{
     //縦スクロールする場合は以下の長さを変更する
-    self = [super initWithFrame:CGRectMake(0, 0,
-                                           [UIScreen mainScreen].bounds.size.width*.9,
-                                           [UIScreen mainScreen].bounds.size.height)];
+    self = [super
+            initWithFrame:
+            CGRectMake(0, 0,
+                       [UIScreen mainScreen].bounds.size.width*.9,
+                       [UIScreen mainScreen].bounds.size.height)];
+    
     
     if(self){
         self.tableType = tableType;
@@ -93,6 +98,8 @@ int heightCell;
     
     
     self.arrCells = [NSMutableArray array];
+    
+    self.scrollView = [[UIScrollView alloc]initWithFrame:self.bounds];
     
     
 //    ArticleCell *articleCell = [[ArticleCell alloc]initWithFrame:

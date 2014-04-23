@@ -33,6 +33,7 @@ UIActivityIndicatorView *indicator;
     [super viewDidLoad];
     
     
+    
 //    //背景画像backgroundViewに記事を配置
 //    [self updateBackgroundAndArticle];
     
@@ -90,10 +91,25 @@ UIActivityIndicatorView *indicator;
 }
 
 -(void)dispNextViewController:(int)noTapped{
-    TextViewController *tvcon =
-    [[TextViewController alloc]
-     initWithArticle:(ArticleData *)arrArticleData[noTapped]];
-    [self presentViewController:tvcon animated:NO completion:nil];
+//    ArticleData *articleData;
+    for(int i = 0;i < [arrArticleData count];i++){
+        for(int j = 0; j < [arrArticleData[i] count];j++){
+            if(noTapped == ((ArticleData *)[arrArticleData[i] objectAtIndex:j]).noID){
+                
+                //タップされたarticleCellに該当するarticleDataを検索
+                ArticleData *articleData = (ArticleData *)[arrArticleData[i] objectAtIndex:j];
+                
+                
+                TextViewController *tvcon =
+                [[TextViewController alloc]
+                 initWithArticle:articleData];
+//                 initWithArticle:(ArticleData *)arrArticleData[noTapped]];
+                [self presentViewController:tvcon animated:NO completion:nil];
+            }
+        }
+    }
+    
+    
 }
 
 
@@ -132,6 +148,15 @@ UIActivityIndicatorView *indicator;
     NSLog(@"exit viewDidAppear");
 }
 
+
+/*
+ articleDataをデバイス(既存記事採用)もしくはウェブ(新規取得)から取得する
+ ※articleDataを新規取得すべきかどうかは事前判定:[Preservation shouldUpdate]
+ ※articleDataを既存記事採用する場合、NSUserDefaultsにデータを取りにいく
+ articleDataをarticleCellに格納する
+ articleCellをarrTableに対応づける
+ arrTableをbackgroundViewに対応づける
+ */
 -(void)setArticleWithBackground{
     
     //表示コンポーネントやデータの初期化等
@@ -144,95 +169,153 @@ UIActivityIndicatorView *indicator;
                          nil];
     
     arrArticleData = [NSMutableArray array];
-    
-    
-    int category = 0;
-    int lastID;
     int numOfArticleAtDB;
     int maxDispArticle = 4;
     
-    for(int i = 0 ;i < [arrTable count];i++){//全てのテーブルに対して
-        lastID = 100000;
-        category = i;
+    
+    //新規データ取得を判断する
+    if([Preservation shouldUpdate]){
         
-        //記事を確認
-        numOfArticleAtDB = [DatabaseManage getCountFromDBUnderNaive:lastID category:i];
+        //更新が必要である場合
 #if LOG
-        NSLog(@"記事数:numOfArticle = %d", numOfArticleAtDB);
+        NSLog(@"更新が必要です。");
 #endif
-        if(numOfArticleAtDB < 1){//if categoy's article data does not exist..
-            continue;//記事が存在しないので次のカテゴリへ(当該カテゴリにはarticleCellを配置しない)
+        
+        
+        [Preservation removeAllData];
+        
+        int category = 0;
+        int lastID;
+        
+        
+        for(int i = 0 ;i < [arrTable count];i++){//全てのテーブルに対して
+            lastID = 100000;
+            category = i;
+            
+            //カテゴリ毎の記事数を確認
+            numOfArticleAtDB = [DatabaseManage getCountFromDBUnderNaive:lastID category:i];
+#if LOG
+            NSLog(@"記事数:numOfArticle = %d", numOfArticleAtDB);
+#endif
+            if(numOfArticleAtDB < 1){//if categoy's article data does not exist..
+                continue;//記事が存在しないので次のカテゴリへ(当該カテゴリにはarticleCellを配置しない)
+            }
+#if LOG
+            NSLog(@"記事取得中...");
+#endif
+            
+            //当該テーブルに配置するarticleCell(に対応するarticleData)を格納するarrArticleData(その中にarrTmpArticleDataを格納)
+            NSMutableArray *arrTmpArticleData = [NSMutableArray array];
+            
+            for(int j = 0;j < MIN(maxDispArticle, numOfArticleAtDB);j++){//各テーブルに最大表示数までのセルを配置
+                
+                
+                //naiveはblog_id999とかispost判定をしていないphpファイル実行
+#if LOG
+                NSLog(@"id取得中...");
+#endif
+                lastID = [DatabaseManage
+                          getLastIDFromDBUnderNaive:lastID
+                          category:category];
+#if LOG
+                NSLog(@"id取得完了");
+#endif
+                
+                //            lastID = 17054;//test用
+                
+                
+                //上記キー値を元にデータを取得
+#if LOG
+                NSLog(@"記事取得中..");//以下の処理が最も時間がかかる(５秒程度)
+#endif
+                NSDictionary *dictTmp = [DatabaseManage getRecordFromDBAt:lastID];//指定したIDを取得する
+#if LOG
+                NSLog(@"記事取得完了");
+#endif
+                lastID = (int)[[dictTmp objectForKey:@"id"] integerValue];
+                
+                NSString *strTitle = [dictTmp objectForKey:@"title"];
+//            NSString *strReturnBody = [dictTmp objectForKey:@"body"];//未使用
+                NSString *strAbst = [dictTmp objectForKey:@"abstforblog"];
+                NSString *strKeyword = [dictTmp objectForKey:@"keywordblog"];
+                NSString *strImageUrl = [dictTmp objectForKey:@"imageurl"];
+                NSString *strUrl = [dictTmp objectForKey:@"url"];
+                int category = (int)[[dictTmp objectForKey:@"category"] integerValue];
+                
+                
+#if LOG
+                NSLog(@"id=%d", lastID);
+                NSLog(@"strTitle = %@", strTitle);
+//                NSLog(@"strBody = %@", strReturnBody);
+                NSLog(@"abstforblog = %@", strAbst);
+                NSLog(@"keyword=%@", strKeyword);
+#endif
+                
+                //既に要約文が作成されている前提なのでテキスト解析は行わない
+                //            TextAnalysis *textAnalysis = [[TextAnalysis alloc]initWithText:strReturnBody];
+                //            NSArray *arrImportantSentence = textAnalysis.getImportantSentence;
+                //            NSArray *arrImportantNode = textAnalysis.getImportantNode;
+                
+                
+                //記事セルにテキストを格納
+                //            articleCell.text = arrImportantSentence[j];
+                
+                ArticleData *articleData = [[ArticleData alloc]init];
+                articleData.noID = lastID;
+                articleData.title = strTitle;
+                articleData.strKeyword = strKeyword;
+                articleData.strSentence = strAbst;
+                articleData.category = category;
+                articleData.strImageUrl = strImageUrl;
+                articleData.strUrl = strUrl;
+                
+                
+                //[Preservation removeAllData];
+                //            NSLog(@"preservation");
+                //            [Preservation preserveArticleData:articleData];
+                
+                
+                [arrTmpArticleData addObject:articleData];
+                
+            }
+            //二次元配列：各テーブルにarrTmpArticleDataを配置する
+            [arrArticleData addObject:arrTmpArticleData];
+            
+        
         }
+        
+        //現在時刻(YMDH)というキーで二次元配列そのものを格納する
+        [Preservation preserveArrArticleData:arrArticleData
+                                      nameAs:[Preservation updateDate]];
+        
+    }else{
+        //更新が必要ない場合
 #if LOG
-        NSLog(@"記事取得中...");
+        NSLog(@"新規取得が必要ないです。");
 #endif
+        
+        //通信を行わずにNSUserDefaultsからデータを取得して表示処理を行う
+        //arrArticleDataにデータを格納
+        arrArticleData = [Preservation getArrArticleDataAsName:
+                          [Preservation updateDate]];
+        
+        
+    }
+    
+    
+    
+    
+    for(int i = 0 ;i < [arrArticleData count];i++){//全てのテーブルに対して
+        
+        numOfArticleAtDB = (int)[((NSMutableArray *)arrArticleData[i]) count];
+        
+#if LOG
+        NSLog(@"カテゴリ%dの記事数は%d", i, numOfArticleAtDB);
+#endif
+        
         for(int j = 0;j < MIN(maxDispArticle, numOfArticleAtDB);j++){//各テーブルに最大表示数までのセルを配置
             
-            
-            //naiveはblog_id999とかispost判定をしていないphpファイル実行
-#if LOG
-            NSLog(@"id取得中...");
-#endif
-            lastID = [DatabaseManage
-                      getLastIDFromDBUnderNaive:lastID
-                      category:category];
-#if LOG
-            NSLog(@"id取得完了");
-#endif
-            
-            //            lastID = 17054;//test用
-            
-            
-            //上記キー値を元にデータを取得
-#if LOG
-            NSLog(@"記事取得中..");//以下の処理が最も時間がかかる(５秒程度)
-#endif
-            NSDictionary *dictTmp = [DatabaseManage getRecordFromDBAt:lastID];//指定したIDを取得する
-#if LOG
-            NSLog(@"記事取得完了");
-#endif
-            lastID = (int)[[dictTmp objectForKey:@"id"] integerValue];
-            
-            NSString *strTitle = [dictTmp objectForKey:@"title"];
-//            NSString *strReturnBody = [dictTmp objectForKey:@"body"];//未使用
-            NSString *strAbst = [dictTmp objectForKey:@"abstforblog"];
-            NSString *strKeyword = [dictTmp objectForKey:@"keywordblog"];
-            NSString *strImageUrl = [dictTmp objectForKey:@"imageurl"];
-            NSString *strUrl = [dictTmp objectForKey:@"url"];
-            int category = (int)[[dictTmp objectForKey:@"category"] integerValue];
-            
-            
-#if LOG
-            NSLog(@"id=%d", lastID);
-            NSLog(@"strTitle = %@", strTitle);
-            NSLog(@"strBody = %@", strReturnBody);
-            NSLog(@"abstforblog = %@", strAbst);
-            NSLog(@"keyword=%@", strKeyword);
-#endif
-            
-            //既に要約文が作成されている前提なのでテキスト解析は行わない
-            //            TextAnalysis *textAnalysis = [[TextAnalysis alloc]initWithText:strReturnBody];
-            //            NSArray *arrImportantSentence = textAnalysis.getImportantSentence;
-            //            NSArray *arrImportantNode = textAnalysis.getImportantNode;
-            
-            
-            //記事セルにテキストを格納
-            //            articleCell.text = arrImportantSentence[j];
-            
-            ArticleData *articleData = [[ArticleData alloc]init];
-            articleData.noID = lastID;
-            articleData.title = strTitle;
-            articleData.strKeyword = strKeyword;
-            articleData.strSentence = strAbst;
-            articleData.category = category;
-            articleData.strImageUrl = strImageUrl;
-            articleData.strUrl = strUrl;
-            
-            
-            [arrArticleData addObject:articleData];
-            
-            
-            
+            ArticleData *articleData = [arrArticleData[i] objectAtIndex:j];
             //記事セル作成
             ArticleCell *articleCell =
             [[ArticleCell alloc]
@@ -241,11 +324,7 @@ UIActivityIndicatorView *indicator;
              withArticleData:articleData
              ];//位置はaddCellメソッド内で適切に配置
             
-            
-            
             [((ArticleTable *)arrTable[i]) addCell:articleCell];
-            
-            
             
             UITapGestureRecognizer *tapGesture;
             tapGesture = [[UITapGestureRecognizer alloc]
@@ -253,13 +332,15 @@ UIActivityIndicatorView *indicator;
                           action:@selector(onTapped:)];
             [articleCell addGestureRecognizer:tapGesture];
             articleCell.userInteractionEnabled = YES;
-            articleCell.tag=[arrArticleData count]-1;//カテゴリによらず単調増加型のtag番号を作成
-            
+//            articleCell.tag=[arrArticleData count]-1;//カテゴリによらず単調増加型のtag番号を作成
+            articleCell.tag = articleData.noID;
             
             //            NSLog(@"arrtable%d = %@", i, arrTable[i]);
-        }
-    }
+        }//各テーブル内のセルに対して
+    }//各テーブルに対して
+#if LOG
     NSLog(@"記事取得完了");
+#endif
     
     
     backgroundView = [[BackgroundView alloc]initWithTable:arrTable];

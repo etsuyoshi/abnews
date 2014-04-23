@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ArticleData : NSObject
+@interface ArticleData : NSObject <NSCoding>
 
 @property (nonatomic) int category;
 @property (nonatomic) int noID;
