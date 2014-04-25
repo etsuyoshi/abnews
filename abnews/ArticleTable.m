@@ -94,7 +94,7 @@ int heightCell;
     
     //test:color
 //    self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:0.3f];
-    self.backgroundColor = [UIColor blueColor];//clear
+    self.backgroundColor = [UIColor clearColor];
     
     
     self.arrCells = [NSMutableArray array];
@@ -102,12 +102,12 @@ int heightCell;
     self.scrollView =
     [[UIScrollView alloc]
      initWithFrame:self.bounds];
-    self.scrollView.delegate = self;
+    self.scrollView.delegate = self;//下方向スクロール時に記事読み込みを実行
     //scrollView内のコンテンツの大きさ
     self.scrollView.contentSize =
     CGSizeMake(self.bounds.size.width,
                self.bounds.size.height);//内容物を縦長にしたければ第二引数を２倍にする
-    self.scrollView.backgroundColor = [UIColor yellowColor];//clear
+    self.scrollView.backgroundColor = [UIColor clearColor];
     //scrollViewをテーブルに貼付ける
     [self addSubview:self.scrollView];
     
@@ -146,7 +146,6 @@ int heightCell;
                    [UIScreen mainScreen].bounds.size.height);
     }
     
-//    NSLog(@"");
     articleCell.frame =
     CGRectMake(10, ([self.arrCells count]-1) * (intervalCell + heightCell),
                widthCell, heightCell);

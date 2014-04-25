@@ -179,11 +179,13 @@ int heightTable;
                 [self addSubview:imvTmp];
             }
             
-            //初期状態ではゼロのみ画面に表示:他のarrTable要素はタッチした瞬間に配置される
+            //初期状態では最初のテーブルのみ画面中心に表示:他のarrTable要素はタッチした瞬間に配置される
             ((ArticleTable *)self.arrTable[0]).center = CGPointMake(WIDTHDEVICE/2, HEIGHTDEVICE/2);
+            //(初期画面では)最初のテーブル以外は画面の右側に配置して見えなくする
             for(int i = 1;i < [self.arrTable count];i++){
                 ((ArticleTable *)self.arrTable[i]).frame =
-                CGRectMake(WIDTHDEVICE, 0,
+                CGRectMake(WIDTHDEVICE,
+                           HEIGHTDEVICE/2-((ArticleTable *)self.arrTable[i]).bounds.size.height/2,
                            ((ArticleTable *)self.arrTable[i]).bounds.size.width,
                            ((ArticleTable *)self.arrTable[i]).bounds.size.height);
             }
@@ -202,7 +204,7 @@ int heightTable;
 //スライドした後に実行される
 -(void)animateTableToCorrectLocation{
     
-    NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
+//    NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
     
     [UIView
      animateWithDuration:0.25f
@@ -236,7 +238,7 @@ int heightTable;
      completion:^(BOOL finished){
          if(finished){
              
-             NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
+//             NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
              NSLog(@"table animate complete");
          }
      }];
