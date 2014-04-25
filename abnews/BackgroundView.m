@@ -202,6 +202,7 @@ int heightTable;
 //スライドした後に実行される
 -(void)animateTableToCorrectLocation{
     
+    NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
     
     [UIView
      animateWithDuration:0.25f
@@ -212,7 +213,8 @@ int heightTable;
          //center
          ((ArticleTable *)self.arrTable[noStatus]).center =
          CGPointMake(noStatus * WIDTHDEVICE + WIDTHDEVICE/2,
-                     heightTable/2);
+                     ((ArticleTable *)self.arrTable[noStatus]).center.y);
+//                     heightTable/2);
 //         centerTable.center =
 //         CGPointMake(WIDTHDEVICE/2,
 //                     HEIGHTDEVICE/2);
@@ -220,17 +222,21 @@ int heightTable;
          for(int i = 0;i < noStatus;i++){
              ((ArticleTable *)self.arrTable[i]).center =
              CGPointMake(noStatus * WIDTHDEVICE - widthTable/2,
-                         heightTable/2);
+                         ((ArticleTable *)self.arrTable[i]).center.y);
+//                         heightTable/2);
          }
          //右側のテーブル
          for(int i = noStatus+1;i < [dictBackground count];i++){
              ((ArticleTable *)self.arrTable[i]).center =
              CGPointMake((noStatus+1) * WIDTHDEVICE + widthTable/2,
-                         heightTable/2);
+                         ((ArticleTable *)self.arrTable[i]).center.y);
+//                         heightTable/2);
          }
      }
      completion:^(BOOL finished){
          if(finished){
+             
+             NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
              NSLog(@"table animate complete");
          }
      }];
