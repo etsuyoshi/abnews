@@ -124,6 +124,14 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
     
     
     
+    UITapGestureRecognizer *singleTap =
+    [[UITapGestureRecognizer alloc]
+     initWithTarget:self
+     action:@selector(singleTapGestureCaptured:)];
+    [self.scrollView addGestureRecognizer:singleTap];
+    
+    
+    
     
 //    ArticleCell *articleCell = [[ArticleCell alloc]initWithFrame:
 //                                CGRectMake(10, 10, 250, 100)];
@@ -178,14 +186,18 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
 
 //下に引っ張るとデータ取得して、取得したデータをセルに格納し、テーブル(上のscrollView)にセルを配置
 -(void)scrollViewDidScroll:(UIScrollView *)sender{
-    NSLog(@"articletable scroll");
-    
+    //スクロールされた後の位置情報
     CGPoint currentPoint = [self.scrollView contentOffset];
+    
+    NSLog(@"table point = (%f, %f)",
+          currentPoint.x,
+          currentPoint.y);
     
     if (CGPointEqualToPoint(_scrollPrevPoint, currentPoint)){
         return;
-    }
-    else {
+    }else if(currentPoint.y < 0){
+        currentPoint.y = 0;
+    }else {
         //横スクロール方向の判定：横方向のスクロールを検出した際には2
         _scrolling_direction = (_scrollPrevPoint.x != currentPoint.x) ? 2 : 1;
         
@@ -212,10 +224,14 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
 //    {
 //        
 //        currentPoint.x = _scrollPrevPoint.x;
-//        [self.scrollView setContentOffset:currentPoint];
-//        _cancelDecelerating = true; //慣性スクロールを止めるためのフラグをセット
+        [self.scrollView setContentOffset:currentPoint];
+        _cancelDecelerating = true; //慣性スクロールを止めるためのフラグをセット
 //    }
     
+    
+    NSLog(@"table point2 = (%f, %f)",
+          currentPoint.x,
+          currentPoint.y);
     
     //一度のスライドで何度も呼ばれないように指を触れたらON,指を話したらOFFというフラグを入れる(未作成)
     //下方向に閾値(downThreasholdToUpdate)以上引っ張れば
@@ -237,16 +253,33 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
 //UIScrollViewをドラッグした後、指がスクリーンから離れた時に呼ばれる
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView
                  willDecelerate:(BOOL)decelerate{
-    NSLog(@"detect lifting-up from screen");
-    NSLog(@"scrollViewDidEndDragging:(UIScrollView *)scrollView");
+    
+    if(!decelerate){
+        // ドラッグ終了 かつ 加速無し
+        NSLog(@"detect lifting-up from screen");
+        NSLog(@"scrollViewDidEndDragging:(UIScrollView *)scrollView");
+    }
+    
 }
 
 //UIScrollViewをドラッグした後、指がスクリーンから離れた時に呼ばれる:その２
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    // フリック操作によるスクロール終了
     NSLog(@"scrollview did end decelerating");
 }
 
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+	// setContentOffset: 等によるスクロール終了
+    NSLog(@"scrollView Did End Scrolling Animation");
+	
+    
+}
+
+
+-(void)singleTapGestureCaptured:(UIScrollView *)sender{
+    NSLog(@"singleTapGestureCaptured");
+}
 
 //下方向に引っ張った時に呼ばれる記事読み込みメソッド
 //引数に現在idを取得しても良いかもしれない
