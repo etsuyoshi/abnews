@@ -19,6 +19,11 @@ int intervalCell;
 int widthCell;
 int heightCell;
 
+int downThreasholdToUpdate;//スクロール時にこれ以上、下方向に引っ張ったら更新するという閾値
+CGPoint _scrollPrevPoint;  //スクロールの開始位置
+BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラグ
+int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）　2:下（offset.yが大きくなる）
+
 
 
 -(id)initWithType:(TableType)tableType{
@@ -31,6 +36,7 @@ int heightCell;
     
     
     if(self){
+        downThreasholdToUpdate = 50;
         self.tableType = tableType;
         [self initializer];
     }
@@ -173,20 +179,24 @@ int heightCell;
 //下に引っ張るとデータ取得して、取得したデータをセルに格納し、テーブル(上のscrollView)にセルを配置
 -(void)scrollViewDidScroll:(UIScrollView *)sender{
     NSLog(@"articletable scroll");
-    /*
-    CGPoint currentPoint = [scrollView contentOffset];
+    
+    CGPoint currentPoint = [self.scrollView contentOffset];
     
     if (CGPointEqualToPoint(_scrollPrevPoint, currentPoint)){
         return;
     }
     else {
-        //上下スクロール方向の判定
-        _scrolling_direction = (_scrollPrevPoint.y != currentPoint.y) ? 2 : 1;
+        //横スクロール方向の判定：横方向のスクロールを検出した際には2
+        _scrolling_direction = (_scrollPrevPoint.x != currentPoint.x) ? 2 : 1;
         
-        if(_scrolling_direction != 2){//上下方向の移動ではないとき
-            //左フリックは無効化(_scrolling_directionは偶数の時に元座標にリセット)
-            _scrolling_direction = (_scrollPrevPoint.x < currentPoint.x) ? 4 : 3;
-        }
+        
+        //最上位である時は、これ以上の上には行かないという判定も必要(未作成)
+        
+        
+//        if(_scrolling_direction != 2){//横方向の移動ではないとき
+//            //左フリックは無効化(_scrolling_directionは偶数の時に元座標にリセット)
+//            _scrolling_direction = (_scrollPrevPoint.x < currentPoint.x) ? 4 : 3;
+//        }
         
         //        NSLog(@"cy=%f, _sy=%f _scrolling_direction = %d : %@",
         //              currentPoint.y,
@@ -195,36 +205,54 @@ int heightCell;
         //              _scrolling_direction==2?@"キャンセル":@"スクロール中");
     }
     
-    //常にスクロール縦位置は同じ
-    currentPoint.y = _scrollPrevPoint.y;
+    //常にスクロール横位置は同じ
+    currentPoint.x = _scrollPrevPoint.x;
     //上下及び右スクロールのキャンセル
-    if (_scrolling_direction % 2 == 0)
-    {
+//    if (_scrolling_direction == 1)
+//    {
+//        
+//        currentPoint.x = _scrollPrevPoint.x;
+//        [self.scrollView setContentOffset:currentPoint];
+//        _cancelDecelerating = true; //慣性スクロールを止めるためのフラグをセット
+//    }
+    
+    
+    //一度のスライドで何度も呼ばれないように指を触れたらON,指を話したらOFFというフラグを入れる(未作成)
+    //下方向に閾値(downThreasholdToUpdate)以上引っ張れば
+    if(self.scrollView.contentOffset.y < downThreasholdToUpdate){
+        [self.scrollView setContentOffset:self.scrollView.contentOffset animated:NO];
         
-        currentPoint.x = _scrollPrevPoint.x;
-        [scrollView setContentOffset:currentPoint];
-        _cancelDecelerating = true; //慣性スクロールを止めるためのフラグをセット
-    }
-    
-    
-    
-    //左方向である場合は一定の閾値以上であれば「戻る」アクション
-    if(scrollView.contentOffset.x < -returnView.bounds.size.width/2){
-        [scrollView setContentOffset:scrollView.contentOffset animated:NO];
-        
-        NSLog(@"touch limit-left side");
+        NSLog(@"touch limit-down side");
         
         //        [self dismissViewController];
         //１秒後に戻る
-        [self performSelector:@selector(dismissViewController)
+        [self performSelector:@selector(readMoreArticle)
                    withObject:nil
                    afterDelay:1.0f];
         
     }
-     
-     
-     
-     */
+}
+
+//http://stackoverflow.com/questions/9609226/detecting-user-touch-on-uiscrollview
+//UIScrollViewをドラッグした後、指がスクリーンから離れた時に呼ばれる
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+                 willDecelerate:(BOOL)decelerate{
+    NSLog(@"detect lifting-up from screen");
+    NSLog(@"scrollViewDidEndDragging:(UIScrollView *)scrollView");
+}
+
+//UIScrollViewをドラッグした後、指がスクリーンから離れた時に呼ばれる:その２
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    NSLog(@"scrollview did end decelerating");
+}
+
+
+//下方向に引っ張った時に呼ばれる記事読み込みメソッド
+//引数に現在idを取得しても良いかもしれない
+-(void)readMoreArticle{
+    NSLog(@"readMoreArticle");
+    
 }
 
 @end
