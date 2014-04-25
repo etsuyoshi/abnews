@@ -328,9 +328,10 @@ int heightTable;
          animations:^{
              
              self.frame =
-             CGRectMake(WIDTHDEVICE * -noStatus, 0, self.bounds.size.width,
+             CGRectMake(WIDTHDEVICE * -noStatus, 0,
+                        self.bounds.size.width,
                         self.bounds.size.height);
-             NSLog(@"animated to x=%f", WIDTHDEVICE * - noStatus);
+             //NSLog(@"animated to x=%f", WIDTHDEVICE * - noStatus);
          }
          completion:^(BOOL finished){
              if(finished){

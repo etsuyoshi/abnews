@@ -6,6 +6,7 @@
 //  Copyright (c) 2014年 endo.news. All rights reserved.
 //
 
+#define ONLINEMODE true
 #define LOG false
 #define DispDatabaseLog
 
@@ -172,9 +173,30 @@ UIActivityIndicatorView *indicator;
     int numOfArticleAtDB;
     int maxDispArticle = 4;
     
+    BOOL shouldUpdate = [Preservation shouldUpdate];
+    
+    
+#if !ONLINEMODE
+    shouldUpdate = false;
+#endif
     
     //新規データ取得を判断する
-    if([Preservation shouldUpdate]){
+    if(!shouldUpdate){
+        
+    
+        //更新が必要ない場合
+#if LOG
+        NSLog(@"新規取得が必要ないです。");
+#endif
+        
+        //通信を行わずにNSUserDefaultsからデータを取得して表示処理を行う
+        //arrArticleDataにデータを格納
+        arrArticleData = [Preservation getArrArticleDataAsName:
+                          [Preservation updateDate]];
+        
+        NSLog(@"%d個のカテゴリを取得しました。", (int)[arrArticleData count]);
+    }else{
+        
         
         //更新が必要である場合
 #if LOG
@@ -287,18 +309,6 @@ UIActivityIndicatorView *indicator;
         //現在時刻(YMDH)というキーで二次元配列そのものを格納する
         [Preservation preserveArrArticleData:arrArticleData
                                       nameAs:[Preservation updateDate]];
-        
-    }else{
-        //更新が必要ない場合
-#if LOG
-        NSLog(@"新規取得が必要ないです。");
-#endif
-        
-        //通信を行わずにNSUserDefaultsからデータを取得して表示処理を行う
-        //arrArticleDataにデータを格納
-        arrArticleData = [Preservation getArrArticleDataAsName:
-                          [Preservation updateDate]];
-        
         
     }
     

@@ -27,7 +27,7 @@ int heightCell;
             initWithFrame:
             CGRectMake(0, 0,
                        [UIScreen mainScreen].bounds.size.width*.9,
-                       [UIScreen mainScreen].bounds.size.height)];
+                       [UIScreen mainScreen].bounds.size.height*.9)];
     
     
     if(self){
@@ -94,12 +94,29 @@ int heightCell;
     
     //test:color
 //    self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:1 alpha:0.3f];
-    self.backgroundColor = [UIColor clearColor];
+    self.backgroundColor = [UIColor blueColor];//clear
     
     
     self.arrCells = [NSMutableArray array];
     
-    self.scrollView = [[UIScrollView alloc]initWithFrame:self.bounds];
+    self.scrollView =
+    [[UIScrollView alloc]
+     initWithFrame:self.bounds];
+    self.scrollView.delegate = self;
+    //scrollView内のコンテンツの大きさ
+    self.scrollView.contentSize =
+    CGSizeMake(self.bounds.size.width,
+               self.bounds.size.height);//内容物を縦長にしたければ第二引数を２倍にする
+    self.scrollView.backgroundColor = [UIColor yellowColor];//clear
+    //scrollViewをテーブルに貼付ける
+    [self addSubview:self.scrollView];
+    
+    
+    self.scrollView.alwaysBounceHorizontal = NO;
+    self.scrollView.alwaysBounceVertical = YES;
+    self.scrollView.directionalLockEnabled = YES;
+    
+    
     
     
 //    ArticleCell *articleCell = [[ArticleCell alloc]initWithFrame:
@@ -118,10 +135,24 @@ int heightCell;
     intervalCell = 10;
     
     
+    //もしセル数に対して表示範囲のscrollViewの縦長さが不足していれば長さを二倍にする
+    if([self.arrCells count] * (intervalCell + heightCell) >
+       self.scrollView.contentSize.height){
+        
+        
+        self.scrollView.contentSize =
+        CGSizeMake(self.scrollView.contentSize.width,
+                   self.scrollView.contentSize.height+
+                   [UIScreen mainScreen].bounds.size.height);
+    }
+    
+//    NSLog(@"");
     articleCell.frame =
-    CGRectMake(10, [self.arrCells count] * (intervalCell + heightCell),
+    CGRectMake(10, ([self.arrCells count]-1) * (intervalCell + heightCell),
                widthCell, heightCell);
-    [self addSubview:[self.arrCells lastObject]];
+    //[self addSubview:[self.arrCells lastObject]];
+    [self.scrollView addSubview:[self.arrCells lastObject]];
+    
     
     /*あとやるべきこと
      *セルにリスナーを付けて別画面を起動し、要約文を表示
@@ -136,6 +167,65 @@ int heightCell;
     }
     
     [self.arrCells removeAllObjects];
+}
+
+
+
+//下に引っ張るとデータ取得して、取得したデータをセルに格納し、テーブル(上のscrollView)にセルを配置
+-(void)scrollViewDidScroll:(UIScrollView *)sender{
+    NSLog(@"articletable scroll");
+    /*
+    CGPoint currentPoint = [scrollView contentOffset];
+    
+    if (CGPointEqualToPoint(_scrollPrevPoint, currentPoint)){
+        return;
+    }
+    else {
+        //上下スクロール方向の判定
+        _scrolling_direction = (_scrollPrevPoint.y != currentPoint.y) ? 2 : 1;
+        
+        if(_scrolling_direction != 2){//上下方向の移動ではないとき
+            //左フリックは無効化(_scrolling_directionは偶数の時に元座標にリセット)
+            _scrolling_direction = (_scrollPrevPoint.x < currentPoint.x) ? 4 : 3;
+        }
+        
+        //        NSLog(@"cy=%f, _sy=%f _scrolling_direction = %d : %@",
+        //              currentPoint.y,
+        //              _scrollPrevPoint.y,
+        //              _scrolling_direction,
+        //              _scrolling_direction==2?@"キャンセル":@"スクロール中");
+    }
+    
+    //常にスクロール縦位置は同じ
+    currentPoint.y = _scrollPrevPoint.y;
+    //上下及び右スクロールのキャンセル
+    if (_scrolling_direction % 2 == 0)
+    {
+        
+        currentPoint.x = _scrollPrevPoint.x;
+        [scrollView setContentOffset:currentPoint];
+        _cancelDecelerating = true; //慣性スクロールを止めるためのフラグをセット
+    }
+    
+    
+    
+    //左方向である場合は一定の閾値以上であれば「戻る」アクション
+    if(scrollView.contentOffset.x < -returnView.bounds.size.width/2){
+        [scrollView setContentOffset:scrollView.contentOffset animated:NO];
+        
+        NSLog(@"touch limit-left side");
+        
+        //        [self dismissViewController];
+        //１秒後に戻る
+        [self performSelector:@selector(dismissViewController)
+                   withObject:nil
+                   afterDelay:1.0f];
+        
+    }
+     
+     
+     
+     */
 }
 
 @end

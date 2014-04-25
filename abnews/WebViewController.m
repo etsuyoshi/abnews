@@ -109,7 +109,7 @@ UIBarButtonItem *bBarButton;
 }
 
 -(void)exit{
-    [self dismissViewControllerAnimated:nil completion:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 /*
 #pragma mark - Navigation

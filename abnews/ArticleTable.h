@@ -20,7 +20,7 @@ typedef NS_ENUM(NSInteger, TableType) {
     TableTypeMatome
 };
 
-@interface ArticleTable : UIView
+@interface ArticleTable : UIView <UIScrollViewDelegate>
 
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) TableType tableType;
@@ -28,4 +28,6 @@ typedef NS_ENUM(NSInteger, TableType) {
 @property (nonatomic) NSMutableArray *arrCells;
 -(id)initWithType:(TableType)tableType;
 -(void)addCell:(ArticleCell *)articleCell;
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView;
 @end

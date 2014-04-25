@@ -257,8 +257,10 @@
     NSData *result = [NSURLConnection sendSynchronousRequest:req
                                            returningResponse:&response
                                                        error:&error];
+    NSLog(@"result=%@", result);
     if(error){
 #if LOG
+        
         NSLog(@"同期通信失敗 at updateValueToDB");
 #endif
         return false;
