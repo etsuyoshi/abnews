@@ -19,6 +19,9 @@ int intervalCell;
 int widthCell;
 int heightCell;
 
+
+bool canReadArticle;
+
 int downThreasholdToUpdate;//スクロール時にこれ以上、下方向に引っ張ったら更新するという閾値
 CGPoint _scrollPrevPoint;  //スクロールの開始位置
 BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラグ
@@ -38,6 +41,7 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
     if(self){
         downThreasholdToUpdate = 50;
         self.tableType = tableType;
+        canReadArticle = true;
         [self initializer];
     }
     
@@ -121,13 +125,15 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
     self.scrollView.alwaysBounceHorizontal = NO;
     self.scrollView.alwaysBounceVertical = YES;
     self.scrollView.directionalLockEnabled = YES;
-    
+    self.scrollView.userInteractionEnabled = YES;
     
     
     UITapGestureRecognizer *singleTap =
     [[UITapGestureRecognizer alloc]
      initWithTarget:self
      action:@selector(singleTapGestureCaptured:)];
+    singleTap.numberOfTapsRequired = 1;
+    singleTap.enabled = YES;
     [self.scrollView addGestureRecognizer:singleTap];
     
     
@@ -235,13 +241,15 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
     
     //一度のスライドで何度も呼ばれないように指を触れたらON,指を話したらOFFというフラグを入れる(未作成)
     //下方向に閾値(downThreasholdToUpdate)以上引っ張れば
-    if(self.scrollView.contentOffset.y < downThreasholdToUpdate){
+    if(self.scrollView.contentOffset.y < downThreasholdToUpdate &&
+       canReadArticle){
         [self.scrollView setContentOffset:self.scrollView.contentOffset animated:NO];
         
         NSLog(@"touch limit-down side");
         
-        //        [self dismissViewController];
-        //１秒後に戻る
+        //ぐるぐるを表示(未作成)
+        
+        //1秒後に記事読み込みを始める
         [self performSelector:@selector(readMoreArticle)
                    withObject:nil
                    afterDelay:1.0f];
@@ -249,15 +257,27 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
     }
 }
 
+
+
+//下方向に引っ張った時に呼ばれる記事読み込みメソッド
+//引数に現在idを取得しても良いかもしれない
+-(void)readMoreArticle{
+    NSLog(@"readMoreArticle");
+    
+    canReadArticle = false;
+    
+}
+
+
 //http://stackoverflow.com/questions/9609226/detecting-user-touch-on-uiscrollview
 //UIScrollViewをドラッグした後、指がスクリーンから離れた時に呼ばれる
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView
                  willDecelerate:(BOOL)decelerate{
     
+    NSLog(@"scrollview did end dragging");
     if(!decelerate){
         // ドラッグ終了 かつ 加速無し
-        NSLog(@"detect lifting-up from screen");
-        NSLog(@"scrollViewDidEndDragging:(UIScrollView *)scrollView");
+        NSLog(@"detect lifting-up from screen at scrollView did end dragging");
     }
     
 }
@@ -279,13 +299,6 @@ int _scrolling_direction;  //0:未確定 1:上（offset.yが小さくなる）�
 
 -(void)singleTapGestureCaptured:(UIScrollView *)sender{
     NSLog(@"singleTapGestureCaptured");
-}
-
-//下方向に引っ張った時に呼ばれる記事読み込みメソッド
-//引数に現在idを取得しても良いかもしれない
--(void)readMoreArticle{
-    NSLog(@"readMoreArticle");
-    
 }
 
 @end

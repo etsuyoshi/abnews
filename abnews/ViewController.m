@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 endo.news. All rights reserved.
 //
 
-#define ONLINEMODE true
+#define ONLINEMODE false
 #define LOG false
 #define DispDatabaseLog
 
@@ -179,6 +179,7 @@ UIActivityIndicatorView *indicator;
 #if !ONLINEMODE
     shouldUpdate = false;
 #endif
+    NSLog(@"shouldUpdate = %d", shouldUpdate);
     
     //新規データ取得を判断する
     if(!shouldUpdate){
@@ -340,6 +341,10 @@ UIActivityIndicatorView *indicator;
             tapGesture = [[UITapGestureRecognizer alloc]
                           initWithTarget:self
                           action:@selector(onTapped:)];
+            
+            //参考：http://stackoverflow.com/questions/16882737/scrollview-gesture-recognizer-eating-all-touch-events
+            //※tapGestureをNOにしてしまうとセルを貼付けるArticleTableに関連づけた"シングル"タップイベントが機能しないのでyesにする
+            tapGesture.cancelsTouchesInView = YES;
             [articleCell addGestureRecognizer:tapGesture];
             articleCell.userInteractionEnabled = YES;
 //            articleCell.tag=[arrArticleData count]-1;//カテゴリによらず単調増加型のtag番号を作成
