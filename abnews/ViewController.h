@@ -11,6 +11,7 @@
 //#import "TextAnalysis.h"
 //#import "ArticleCell.h"
 #import "BackgroundView.h"
+#import "CreateComponentClass.h"
 
 #import "Preservation.h"
 

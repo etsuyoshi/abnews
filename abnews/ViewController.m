@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 endo.news. All rights reserved.
 //
 
-#define ONLINEMODE false
+#define ONLINEMODE true
 #define LOG false
 #define DispDatabaseLog
 
@@ -27,7 +27,9 @@ CGPoint pntStartDrag;
 int noStatus;//現在の状態(どの区切りか)を判別:最初は一番左の状態
 UIView *btnUpdate;
 
-UIActivityIndicatorView *indicator;
+UIView *uivIndicatorWithFrame;
+
+//UIActivityIndicatorView *indicator;
 
 - (void)viewDidLoad
 {
@@ -51,17 +53,28 @@ UIActivityIndicatorView *indicator;
                         action:@selector(updateBackgroundAndArticle)];
     [btnUpdate addGestureRecognizer:tapGestureUpdate];
     
-    //待機インジケーター
-    indicator =
-    [[UIActivityIndicatorView alloc]
-     initWithActivityIndicatorStyle:
-     UIActivityIndicatorViewStyleWhiteLarge];
-    indicator.color = [UIColor redColor];
     
-    indicator.center = CGPointMake(self.view.bounds.size.width/2,
-                                   self.view.bounds.size.height/2);
-    [self.view addSubview:indicator];
-    [indicator startAnimating];//待機表示開始
+    //待機中に表示される背景画像
+    UIImageView *uivBackground = [[UIImageView alloc]initWithImage:
+                                  [UIImage imageNamed:@"sunrising.jpg"]];
+    [self.view addSubview:uivBackground];
+    [self.view sendSubviewToBack:uivBackground];
+    
+    
+    //待機インジケーター
+    
+    int indicatorWidth = 100;
+    int indicatorHeight = 100;
+    uivIndicatorWithFrame =
+    [CreateComponentClass
+     createIndicatorWithFrame:CGRectMake(self.view.bounds.size.width/2-indicatorWidth/2,
+                                         self.view.bounds.size.height/2-indicatorHeight/2,
+                                         indicatorWidth, indicatorHeight)
+     frameColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5f]
+     indicatorColor:[UIColor blackColor]];
+    
+    [uivBackground addSubview:uivIndicatorWithFrame];
+    
 }
 
 
@@ -82,8 +95,9 @@ UIActivityIndicatorView *indicator;
     [self.view addSubview:backgroundView];
 //    [self.view sendSubviewToBack:backgroundView];
     
-    [indicator stopAnimating];//待機表示終了
-    [indicator removeFromSuperview];
+//    [indicator stopAnimating];//待機表示終了
+//    [indicator removeFromSuperview];
+    [uivIndicatorWithFrame removeFromSuperview];
 }
 
 -(void)onTapped:(UITapGestureRecognizer *)gr{

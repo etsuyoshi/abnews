@@ -37,6 +37,7 @@ UIView *viewLink;
 UIView *contentViewOnScroll;//textViewを置く土台
 UITextView *textView;
 UIView *returnView;//右にフリックした時に左に見えるやつ
+UIImageView *viewAllow;
 //UIImage *imgBackground;
 UIView *viewImage;
 ArticleData *articleData;
@@ -47,8 +48,6 @@ UIScrollView *scrollView;
 -(id)initWithArticle:(ArticleData *)_articleData{
     self = [super init];
     if(self){
-        
-        
         
         category = 0;//articleDataのカテゴリに応じて変更
         
@@ -105,7 +104,7 @@ UIScrollView *scrollView;
         
         
         //allow追加
-        UIImageView *viewAllow =
+        viewAllow =
         [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"allow_update.png"]];
         viewAllow.center =
         CGPointMake(returnView.bounds.size.width*2/3,
@@ -224,6 +223,25 @@ UIScrollView *scrollView;
 //}
 
 -(void)dismissViewController{
+    
+//    NSLog(@"Viewwidth = %d", (int)returnView.bounds.size.width);
+//    NSLog(@"indicator width = %d", (int)indicator.bounds.size.width);
+//    NSLog(@"viewheigth = %d", (int)returnView.bounds.size.height);
+//    NSLog(@"indicator heigth = %d", (int)indicator.bounds.size.height);
+//    
+//    
+//    NSLog(@"indicator x=%d, y = %d",
+//          (int)indicator.center.x,
+//          (int)indicator.center.y);
+//    
+//    NSLog(@"allow : x=%d, y = %d",
+//          (int)viewAllow.center.x,
+//          (int)viewAllow.center.y);
+    
+    
+    
+    
+    
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 -(void)gotoWebViewController{
@@ -301,6 +319,22 @@ UIScrollView *scrollView;
         [scrollView setContentOffset:scrollView.contentOffset animated:NO];
         
         NSLog(@"touch limit-left side");
+        
+        
+        //最初の一回だけにする(未コーディング)
+        //戻る印の下にインジケーターを表示する
+        UIActivityIndicatorView *indicator =
+        [[UIActivityIndicatorView alloc]
+         initWithActivityIndicatorStyle:
+         UIActivityIndicatorViewStyleWhiteLarge];
+        indicator.color = [UIColor whiteColor];
+        indicator.center =
+        CGPointMake(viewAllow.center.x,
+                    viewAllow.center.y + indicator.bounds.size.height);
+        
+        [returnView addSubview:indicator];
+        [indicator startAnimating];//待機表示開始
+        
         
 //        [self dismissViewController];
         //１秒後に戻る
