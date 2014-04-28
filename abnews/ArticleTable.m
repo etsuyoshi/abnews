@@ -245,11 +245,10 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
 
 
 
-//下方向に引っ張った時に呼ばれる記事読み込みメソッド
+//下方向に引っ張った時に呼ばれる記事読み込みメソッド(表示機能含む)
 //引数に現在idを取得しても良いかもしれない
 -(void)readMoreArticle{
     NSLog(@"readMoreArticle");
-    
     
     
     //データ格納用配列を用意
@@ -263,7 +262,7 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
 //    NSLog(@"id = %d", newID);
     
     //データを5個取得
-    for(int i = 0;i < 2;i++){
+    for(int i = 0;i < 5;i++){
         
         newID = [DatabaseManage getLastIDFromDBUnderNaive:newID
                                                  category:lastCategory];
@@ -295,15 +294,16 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
     //取得したデータを記事として表示:上記ループと分ける必要はないが、可読性向上のため
     for(int i = 0;i < [arrArticleData count];i++){
         [self addCell:
-         [[ArticleCell alloc]initWithFrame:CGRectMake(0, 0, widthCell, heightCell)
-                           withArticleData:arrArticleData[i]]];
+         [[ArticleCell alloc]
+          initWithFrame:CGRectMake(0, 0, widthCell, heightCell)
+          withArticleData:arrArticleData[i]]];
     }
     
     //表示完了したらindicatorストップ(非表示)
     [uivWithIndicator removeFromSuperview];
 }
 
-
+//http://cocoadays.blogspot.jp/2010/08/5.html
 //http://stackoverflow.com/questions/9609226/detecting-user-touch-on-uiscrollview
 //UIScrollViewをドラッグした後、指がスクリーンから離れた時に呼ばれる
 //あくまでもドラッグが終了した時点なので、その後画面が慣性で移動した分は考慮されない・・

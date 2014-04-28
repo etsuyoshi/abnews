@@ -30,8 +30,7 @@ CGPoint pntStartDrag;
 int noStatus;//現在の状態(どの区切りか)を判別:最初は一番左の状態
 UIView *btnUpdate;
 
-int widthCell = WIDTHCELL;
-int heightCell = HEIGHTCELL;
+
 
 UIView *uivIndicatorWithFrame;
 
@@ -350,7 +349,7 @@ UIView *uivIndicatorWithFrame;
             ArticleCell *articleCell =
             [[ArticleCell alloc]
              initWithFrame:
-             CGRectMake(0, 0, 250, 100)
+             CGRectMake(0, 0, WIDTHCELL, HEIGHTCELL)
              withArticleData:articleData
              ];//位置はaddCellメソッド内で適切に配置
             

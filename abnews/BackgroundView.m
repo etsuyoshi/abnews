@@ -181,10 +181,12 @@ int heightTable;
             
             //初期状態では最初のテーブルのみ画面中心に表示:他のarrTable要素はタッチした瞬間に配置される
             ((ArticleTable *)self.arrTable[0]).center = CGPointMake(WIDTHDEVICE/2, HEIGHTDEVICE/2);
+            
+//            NSLog(@"num of table = %d", (int)[self.arrTable count]);
             //(初期画面では)最初のテーブル以外は画面の右側に配置して見えなくする
             for(int i = 1;i < [self.arrTable count];i++){
                 ((ArticleTable *)self.arrTable[i]).frame =
-                CGRectMake(WIDTHDEVICE,
+                CGRectMake(WIDTHDEVICE,//画面右端外に配置(非表示)
                            HEIGHTDEVICE/2-((ArticleTable *)self.arrTable[i]).bounds.size.height/2,
                            ((ArticleTable *)self.arrTable[i]).bounds.size.width,
                            ((ArticleTable *)self.arrTable[i]).bounds.size.height);
@@ -215,7 +217,8 @@ int heightTable;
          //center
          ((ArticleTable *)self.arrTable[noStatus]).center =
          CGPointMake(noStatus * WIDTHDEVICE + WIDTHDEVICE/2,
-                     ((ArticleTable *)self.arrTable[noStatus]).center.y);
+                     HEIGHTDEVICE/2);
+//                     ((ArticleTable *)self.arrTable[noStatus]).center.y);
 //                     heightTable/2);
 //         centerTable.center =
 //         CGPointMake(WIDTHDEVICE/2,
@@ -224,14 +227,16 @@ int heightTable;
          for(int i = 0;i < noStatus;i++){
              ((ArticleTable *)self.arrTable[i]).center =
              CGPointMake(noStatus * WIDTHDEVICE - widthTable/2,
-                         ((ArticleTable *)self.arrTable[i]).center.y);
+                         HEIGHTDEVICE/2);
+//                         ((ArticleTable *)self.arrTable[i]).center.y);
 //                         heightTable/2);
          }
          //右側のテーブル
          for(int i = noStatus+1;i < [dictBackground count];i++){
              ((ArticleTable *)self.arrTable[i]).center =
              CGPointMake((noStatus+1) * WIDTHDEVICE + widthTable/2,
-                         ((ArticleTable *)self.arrTable[i]).center.y);
+                         HEIGHTDEVICE/2);
+//                         ((ArticleTable *)self.arrTable[i]).center.y);
 //                         heightTable/2);
          }
      }

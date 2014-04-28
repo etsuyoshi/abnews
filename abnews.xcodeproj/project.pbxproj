@@ -13,6 +13,7 @@
 		3412DF7F190D308F003812EE /* sunrising2.png in Resources */ = {isa = PBXBuildFile; fileRef = 3412DF7C190D308F003812EE /* sunrising2.png */; };
 		3412DF80190D308F003812EE /* sunrising3.png in Resources */ = {isa = PBXBuildFile; fileRef = 3412DF7D190D308F003812EE /* sunrising3.png */; };
 		34604CBB1904ACC400C806BC /* Preservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 34604CBA1904ACC400C806BC /* Preservation.m */; };
+		34A19A17190E931F0080CB96 /* TabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 34A19A16190E931F0080CB96 /* TabBar.m */; };
 		34FFD6EE19024ACD00F5413A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FFD6ED19024ACD00F5413A /* Foundation.framework */; };
 		34FFD6F019024ACD00F5413A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FFD6EF19024ACD00F5413A /* CoreGraphics.framework */; };
 		34FFD6F219024ACD00F5413A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FFD6F119024ACD00F5413A /* UIKit.framework */; };
@@ -65,6 +66,8 @@
 		3412DF7D190D308F003812EE /* sunrising3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sunrising3.png; sourceTree = "<group>"; };
 		34604CB91904ACC400C806BC /* Preservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preservation.h; path = abnews/Preservation.h; sourceTree = "<group>"; };
 		34604CBA1904ACC400C806BC /* Preservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preservation.m; path = abnews/Preservation.m; sourceTree = "<group>"; };
+		34A19A15190E931F0080CB96 /* TabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBar.h; sourceTree = "<group>"; };
+		34A19A16190E931F0080CB96 /* TabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBar.m; sourceTree = "<group>"; };
 		34FFD6EA19024ACD00F5413A /* abnews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = abnews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34FFD6ED19024ACD00F5413A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		34FFD6EF19024ACD00F5413A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -187,6 +190,8 @@
 				34FFD72519024B2800F5413A /* ArticleTable.m */,
 				34FFD72619024B2800F5413A /* BackgroundView.h */,
 				34FFD72719024B2800F5413A /* BackgroundView.m */,
+				34A19A15190E931F0080CB96 /* TabBar.h */,
+				34A19A16190E931F0080CB96 /* TabBar.m */,
 				34FFD72819024B2800F5413A /* TextViewController.h */,
 				34FFD72919024B2800F5413A /* TextViewController.m */,
 				34FFD72A19024B2800F5413A /* WebViewController.h */,
@@ -320,6 +325,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = endo.neural;
 				TargetAttributes = {
+					34FFD6E919024ACD00F5413A = {
+						DevelopmentTeam = VGD3AUTV7W;
+					};
 					34FFD70A19024ACD00F5413A = {
 						TestTargetID = 34FFD6E919024ACD00F5413A;
 					};
@@ -394,6 +402,7 @@
 				34FFD72E19024B2800F5413A /* BackgroundView.m in Sources */,
 				34FFD70419024ACD00F5413A /* ViewController.m in Sources */,
 				3412DF78190D2BEE003812EE /* CreateComponentClass.m in Sources */,
+				34A19A17190E931F0080CB96 /* TabBar.m in Sources */,
 				34FFD6FE19024ACD00F5413A /* AppDelegate.m in Sources */,
 				34FFD6FA19024ACD00F5413A /* main.m in Sources */,
 			);
@@ -512,10 +521,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "abnews/abnews-Prefix.pch";
 				INFOPLIST_FILE = "abnews/abnews-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -525,10 +537,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "abnews/abnews-Prefix.pch";
 				INFOPLIST_FILE = "abnews/abnews-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
