@@ -189,7 +189,6 @@ UIView *uivIndicatorWithFrame;
     
     BOOL shouldUpdate = [Preservation shouldUpdate];
     
-    
 #if !ONLINEMODE
     shouldUpdate = false;
 #endif
@@ -357,7 +356,8 @@ UIView *uivIndicatorWithFrame;
                           action:@selector(onTapped:)];
             
             //参考：http://stackoverflow.com/questions/16882737/scrollview-gesture-recognizer-eating-all-touch-events
-            //※tapGestureをNOにしてしまうとセルを貼付けるArticleTableに関連づけた"シングル"タップイベントが機能しないのでyesにする
+            //※tapGestureのcancelsTouchesInViewをNOにしてしまうと
+            // セルを貼付けるArticleTableに関連づけた"シングル"タップイベントが機能しないのでyesにする
             tapGesture.cancelsTouchesInView = YES;
             [articleCell addGestureRecognizer:tapGesture];
             articleCell.userInteractionEnabled = YES;
