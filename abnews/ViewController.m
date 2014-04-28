@@ -357,8 +357,8 @@ UIView *uivIndicatorWithFrame;
             
             //参考：http://stackoverflow.com/questions/16882737/scrollview-gesture-recognizer-eating-all-touch-events
             //※tapGestureのcancelsTouchesInViewをNOにしてしまうと
-            // セルを貼付けるArticleTableに関連づけた"シングル"タップイベントが機能しないのでyesにする
-            tapGesture.cancelsTouchesInView = YES;
+            // セルを貼付けるArticleTableに関連づけた"シングル"タップイベントが機能しないのでyesにする：そもそもtableにタッチイベントを付けるのをやめて絶対量と変化量で維持更新アクションを判断する
+//            tapGesture.cancelsTouchesInView = YES;
             [articleCell addGestureRecognizer:tapGesture];
             articleCell.userInteractionEnabled = YES;
 //            articleCell.tag=[arrArticleData count]-1;//カテゴリによらず単調増加型のtag番号を作成
