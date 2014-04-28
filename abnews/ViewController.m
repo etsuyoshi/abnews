@@ -10,6 +10,9 @@
 #define LOG false
 #define DispDatabaseLog
 
+#define WIDTHCELL 250
+#define HEIGHTCELL 100
+
 #import "ViewController.h"
 
 @interface ViewController ()
@@ -26,6 +29,9 @@ BackgroundView *backgroundView;
 CGPoint pntStartDrag;
 int noStatus;//現在の状態(どの区切りか)を判別:最初は一番左の状態
 UIView *btnUpdate;
+
+int widthCell = WIDTHCELL;
+int heightCell = HEIGHTCELL;
 
 UIView *uivIndicatorWithFrame;
 

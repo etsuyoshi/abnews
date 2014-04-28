@@ -152,6 +152,7 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
     [self.arrCells addObject:articleCell];
     heightCell = articleCell.bounds.size.height;
     widthCell = articleCell.bounds.size.width;
+    
     intervalCell = 10;
     
     
@@ -162,8 +163,7 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
         
         self.scrollView.contentSize =
         CGSizeMake(self.scrollView.contentSize.width,
-                   self.scrollView.contentSize.height+
-                   [UIScreen mainScreen].bounds.size.height);
+                   self.scrollView.contentSize.height+heightCell);
     }
     
     articleCell.frame =
@@ -173,10 +173,6 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
     [self.scrollView addSubview:[self.arrCells lastObject]];
     
     
-    /*あとやるべきこと
-     *セルにリスナーを付けて別画面を起動し、要約文を表示
-     *tableを縦にスクロールできるようにする
-     */
 }
 
 -(void)removeAllCells{
@@ -255,17 +251,56 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
     NSLog(@"readMoreArticle");
     
     
-    uivWithIndicator =
-    [CreateComponentClass
-     createIndicatorWithFrame:CGRectMake(0, 0, 100, 100)
-     frameColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5f]
-     indicatorColor:[UIColor redColor]];
     
-    uivWithIndicator.center =
-    CGPointMake(self.bounds.size.width/2,
-                self.bounds.size.height/2);
+    //データ格納用配列を用意
+    NSMutableArray *arrArticleData = [NSMutableArray array];
+    ArticleData *articleData = nil;
     
-    [self addSubview:uivWithIndicator];
+    
+    int newID = ((ArticleCell *)[self.arrCells lastObject]).articleData.noID;
+    int lastCategory = ((ArticleCell *)[self.arrCells lastObject]).articleData.category;
+    NSDictionary *dictTmp = nil;
+//    NSLog(@"id = %d", newID);
+    
+    //データを5個取得
+    for(int i = 0;i < 2;i++){
+        
+        newID = [DatabaseManage getLastIDFromDBUnderNaive:newID
+                                                 category:lastCategory];
+//        NSLog(@"newID = %d", newID);
+        dictTmp = [DatabaseManage getRecordFromDBAt:newID];//指定したIDを取得する
+        NSString *strTitle = [dictTmp objectForKey:@"title"];
+//            NSString *strReturnBody = [dictTmp objectForKey:@"body"];//未使用
+        NSString *strAbst = [dictTmp objectForKey:@"abstforblog"];
+        NSString *strKeyword = [dictTmp objectForKey:@"keywordblog"];
+        NSString *strImageUrl = [dictTmp objectForKey:@"imageurl"];
+        NSString *strUrl = [dictTmp objectForKey:@"url"];
+        int category = (int)[[dictTmp objectForKey:@"category"] integerValue];
+        
+        
+        
+        articleData = [[ArticleData alloc]init];
+        articleData.title = strTitle;
+        articleData.strKeyword = strKeyword;
+        articleData.strSentence = strAbst;
+        articleData.strImageUrl = strImageUrl;
+        articleData.strUrl = strUrl;
+        articleData.category = category;
+        
+        [arrArticleData addObject:articleData];
+        
+        NSLog(@"%d個のデータ格納完了", i);
+    }
+    
+    //取得したデータを記事として表示:上記ループと分ける必要はないが、可読性向上のため
+    for(int i = 0;i < [arrArticleData count];i++){
+        [self addCell:
+         [[ArticleCell alloc]initWithFrame:CGRectMake(0, 0, widthCell, heightCell)
+                           withArticleData:arrArticleData[i]]];
+    }
+    
+    //表示完了したらindicatorストップ(非表示)
+    [uivWithIndicator removeFromSuperview];
 }
 
 
@@ -284,13 +319,19 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
     }
     
     
-//    NSLog(@"contentoffset y = %d, threashold = %d",
-//          (int)self.scrollView.contentOffset.y,
-//          (int)downThreasholdToUpdate);
+    NSLog(@"contentoffset y = %d, threashold = %d",
+          (int)self.scrollView.contentOffset.y,
+          (int)downThreasholdToUpdate);
+    
+    NSLog(@"content size = %d, bounds = %d",
+          (int)self.scrollView.contentSize.height,
+          (int)self.scrollView.bounds.size.height);
     
     //一度のスライドで何度も呼ばれないように指を触れたらON,指を話したらOFFというフラグを入れる(未作成)
     //下方向に閾値(downThreasholdToUpdate)以上引っ張れば
-    if(self.scrollView.contentOffset.y > downThreasholdToUpdate//一定以上、下方向に引っ張った時
+    if(self.scrollView.contentOffset.y >
+       self.scrollView.contentSize.height - self.scrollView.bounds.size.height +
+       downThreasholdToUpdate//一定以上、下方向に引っ張った時
        ){
         
         
@@ -299,12 +340,22 @@ BOOL _cancelDecelerating;  //慣性スクロールをキャンセルするフラ
         
         NSLog(@"touch limit-down side");
         
-        //ぐるぐるを表示(未作成)
+        //indicatorの表示
+        uivWithIndicator =
+        [CreateComponentClass
+         createIndicatorWithFrame:CGRectMake(0, 0, 100, 100)
+         frameColor:[[UIColor whiteColor] colorWithAlphaComponent:0.5f]
+         indicatorColor:[UIColor redColor]];
+        uivWithIndicator.center =
+        CGPointMake(self.bounds.size.width/2,
+                    self.bounds.size.height/2);
+        [self addSubview:uivWithIndicator];
         
-        //1秒後に記事読み込みを始める
+        
+        //0.5秒後に記事読み込みを始める:すぐに実行するとindicatorが表示されなくなる？
         [self performSelector:@selector(readMoreArticle)
                    withObject:nil
-                   afterDelay:1.0f];
+                   afterDelay:0.5f];
         
     }
     
