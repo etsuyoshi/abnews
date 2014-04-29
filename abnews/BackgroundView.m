@@ -5,6 +5,9 @@
 //  Created by 遠藤 豪 on 2014/02/10.
 //  Copyright (c) 2014年 endo.news. All rights reserved.
 //
+
+//#import "TabBar.h"
+
 //端末画面横サイズ
 #define WIDTHDEVICE [UIScreen mainScreen].bounds.size.width
 //端末画面縦サイズ
@@ -13,17 +16,18 @@
 #define THREASHOLDONFLICK 100
 
 #import "BackgroundView.h"
-
+#import "ViewController.h"
 
 
 @implementation BackgroundView
 @synthesize arrTable = _arrTable;
+
 CGPoint pntStartDrag;//drag開始点
 int noStatus;//表示されている画面ID(左から0,1,...,[arrStrBackground count])
 int numOfImage;//画像の枚数
 
 NSMutableDictionary *dictBackground;
-TabBar *tabBar;
+
 
 
 int widthTable;
@@ -34,6 +38,9 @@ int heightTable;
 //ArticleTable *centerTable;
 
 - (id)initWithTable:(NSArray *)_arrTableArg{
+    //tabBarを連動させるため：
+    viewController = [[ViewController alloc]init];
+    
     
     widthTable = ((ArticleTable *)_arrTableArg[0]).bounds.size.width;
     heightTable = ((ArticleTable *)_arrTableArg[0]).bounds.size.height;
@@ -207,8 +214,12 @@ int heightTable;
 
 //スライドした後に実行される
 -(void)animateTableToCorrectLocation{
-    
+    NSLog(@"animate table to correct location");
 //    NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
+//    NSLog(@"viewController = %@", viewController);
+//    NSLog(@"before veiw controller move right tab");
+    [viewController moveRightTab];
+//    NSLog(@"after view controller move right tab");
     
     [UIView
      animateWithDuration:0.25f

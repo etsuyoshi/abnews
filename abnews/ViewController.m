@@ -13,20 +13,21 @@
 #define WIDTHCELL 250
 #define HEIGHTCELL 100
 
+#import "BackgroundView.h"
 #import "ViewController.h"
-
 @interface ViewController ()
-
 @end
 
 @implementation ViewController
 
+//@synthesize tabBar;//backgroundの中から参照できるように。
+TabBar *tabBar;
 //@synthesize mecab;
 
 NSMutableArray *arrArticleData;
 
-BackgroundView *backgroundView;
-//TabBar *tabBar;
+//BackgroundView *backgroundView;
+
 CGPoint pntStartDrag;
 int noStatus;//現在の状態(どの区切りか)を判別:最初は一番左の状態
 UIView *btnUpdate;
@@ -101,7 +102,7 @@ UIView *uivIndicatorWithFrame;
     [self.view addSubview:backgroundView];
 //    [self.view sendSubviewToBack:backgroundView];
     
-//    [self.view addSubview:tabBar];
+    [self.view addSubview:tabBar];
     
 //    [indicator stopAnimating];//待機表示終了
 //    [indicator removeFromSuperview];
@@ -380,7 +381,7 @@ UIView *uivIndicatorWithFrame;
 #endif
     
     //カテゴリーを表示するバーを表示
-//    tabBar = [[TabBar alloc]initWithTable:arrTable];
+    tabBar = [[TabBar alloc]initWithTable:arrTable];
     
     
     //セルを搭載したテーブルを貼り付いたバックグランドを作成する
@@ -414,5 +415,15 @@ UIView *uivIndicatorWithFrame;
     }
 }
 
+-(void)moveLeftTab{
+    NSLog(@"move left tab");
+    
+    [tabBar moveLeft];
+}
+
+-(void)moveRightTab{
+    NSLog(@"move right tab");
+    [tabBar moveRight];
+}
 
 @end

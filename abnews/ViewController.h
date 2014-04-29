@@ -10,10 +10,10 @@
 #import "DatabaseManage.h"
 //#import "TextAnalysis.h"
 //#import "ArticleCell.h"
-#import "BackgroundView.h"
+//#import "BackgroundView.h"
+@class BackgroundView;
 #import "TabBar.h"
 #import "CreateComponentClass.h"
-
 #import "Preservation.h"
 
 //#import "Mecab.h"
@@ -24,7 +24,13 @@
 
 @interface ViewController : UIViewController{
     //    Mecab *mecab;
+    BackgroundView *backgroundView;
+//    TabBar *tabBar;
 }
 
 //@property (nonatomic) Mecab *mecab;
+//@property (nonatomic) TabBar *tabBar;
+
+-(void)moveRightTab;
+-(void)moveLeftTab;
 @end

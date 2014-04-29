@@ -8,9 +8,13 @@
 
 #import "ArticleTable.h"
 #import <UIKit/UIKit.h>
-#import "TabBar.h"
-
-@interface BackgroundView : UIImageView
+//#import "TabBar.h"
+@class ViewController;//循環参照を回避するためimportせずにコンパイラディレクティブにする
+//@class TabBar;
+@interface BackgroundView : UIImageView{
+    ViewController *viewController;
+//    TabBar *tabBar;
+}
 
 
 @property (nonatomic) NSMutableArray *arrTable;
