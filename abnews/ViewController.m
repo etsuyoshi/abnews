@@ -20,9 +20,9 @@
 
 @implementation ViewController
 
-//@synthesize tabBar;//backgroundの中から参照できるように。
+//どこからでも呼べるように大域的変数として定義する
+//BackgroundViewのフリック操作によりtabBarを連動させる
 TabBar *tabBar;
-//@synthesize mecab;
 
 NSMutableArray *arrArticleData;
 
@@ -84,6 +84,10 @@ UIView *uivIndicatorWithFrame;
     
 }
 
+- (BOOL)prefersStatusBarHidden {
+    //YESでステータスバーを非表示（NOなら表示）
+    return YES;
+}
 
 /*
  *所定の数だけarticleDataを用意
@@ -416,13 +420,12 @@ UIView *uivIndicatorWithFrame;
 }
 
 -(void)moveLeftTab{
-    NSLog(@"move left tab");
-    
+    NSLog(@"move left tab from ViewController");
     [tabBar moveLeft];
 }
 
 -(void)moveRightTab{
-    NSLog(@"move right tab");
+    NSLog(@"move right tab from ViewController");
     [tabBar moveRight];
 }
 

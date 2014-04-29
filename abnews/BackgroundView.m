@@ -214,11 +214,10 @@ int heightTable;
 
 //スライドした後に実行される
 -(void)animateTableToCorrectLocation{
-    NSLog(@"animate table to correct location");
+//    NSLog(@"animate table to correct location");
 //    NSLog(@"origin = %f", ((UIView *)(self.arrTable[0])).frame.origin.y);
 //    NSLog(@"viewController = %@", viewController);
 //    NSLog(@"before veiw controller move right tab");
-    [viewController moveRightTab];
 //    NSLog(@"after view controller move right tab");
     
     [UIView
@@ -340,9 +339,15 @@ int heightTable;
         
         
         if(pntStartDrag.x - self.center.x > THREASHOLDONFLICK){//左にドラッグ
-            if(noStatus < numOfImage-1)noStatus++;
+            if(noStatus < numOfImage-1){
+                noStatus++;
+                [viewController moveRightTab];//メニュータブを右にスライド
+            }
         }else if(pntStartDrag.x - self.center.x < -THREASHOLDONFLICK){//右にドラッグ
-            if(noStatus > 0)noStatus--;
+            if(noStatus > 0){
+                noStatus--;
+                [viewController moveLeftTab];//メニュータブを左にスライド
+            }
         }else{
             //do nothing
         }

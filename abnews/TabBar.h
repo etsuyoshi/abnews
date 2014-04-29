@@ -11,8 +11,13 @@
 //#import "ArticleData.h"
 #import "ArticleTable.h"
 
-@interface TabBar : UIScrollView
 
+@interface TabBar : UIScrollView
+@property (nonatomic) int noForcus;
+@property (nonatomic) NSMutableArray *arrLabel;
+
+-(id)initWithTable:(NSArray *)arrTable
+          forcusTo:(int)noStatus;
 -(id)initWithTable:(NSArray *)arrTable;
 -(void)moveLeft;
 -(void)moveRight;

@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "abnews/BackgroundView.m"
-            timestampString = "420470594.376075"
+            timestampString = "420478059.222317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "260"
-            endingLineNumber = "260"
+            startingLineNumber = "247"
+            endingLineNumber = "247"
             landmarkName = "-animateTableToCorrectLocation"
             landmarkType = "5">
          </BreakpointContent>
