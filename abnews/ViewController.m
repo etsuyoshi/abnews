@@ -26,6 +26,7 @@
 NSMutableArray *arrArticleData;
 
 BackgroundView *backgroundView;
+TabBar *tabBar;
 CGPoint pntStartDrag;
 int noStatus;//現在の状態(どの区切りか)を判別:最初は一番左の状態
 UIView *btnUpdate;
@@ -99,6 +100,8 @@ UIView *uivIndicatorWithFrame;
     [backgroundView removeFromSuperview];
     [self.view addSubview:backgroundView];
 //    [self.view sendSubviewToBack:backgroundView];
+    
+    [self.view addSubview:tabBar];
     
 //    [indicator stopAnimating];//待機表示終了
 //    [indicator removeFromSuperview];
@@ -376,7 +379,11 @@ UIView *uivIndicatorWithFrame;
     NSLog(@"記事取得完了");
 #endif
     
+    //カテゴリーを表示するバーを表示
+    tabBar = [[TabBar alloc]initWithTable:arrTable];
     
+    
+    //セルを搭載したテーブルを貼り付いたバックグランドを作成する
     backgroundView = [[BackgroundView alloc]initWithTable:arrTable];
 }
 

@@ -7,7 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+//#import "ArticleCell.h"
+//#import "ArticleData.h"
+#import "ArticleTable.h"
 
-@interface TabBar : UIView
+@interface TabBar : UIScrollView
 
+-(id)initWithTable:(NSArray *)arrTable;
 @end
