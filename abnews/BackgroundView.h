@@ -8,6 +8,7 @@
 
 #import "ArticleTable.h"
 #import <UIKit/UIKit.h>
+#import "TabBar.h"
 
 @interface BackgroundView : UIImageView
 

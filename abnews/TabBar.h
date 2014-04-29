@@ -14,4 +14,6 @@
 @interface TabBar : UIScrollView
 
 -(id)initWithTable:(NSArray *)arrTable;
+-(void)moveLeft;
+-(void)moveRight;
 @end

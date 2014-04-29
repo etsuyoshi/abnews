@@ -23,6 +23,8 @@ int noStatus;//表示されている画面ID(左から0,1,...,[arrStrBackground 
 int numOfImage;//画像の枚数
 
 NSMutableDictionary *dictBackground;
+TabBar *tabBar;
+
 
 int widthTable;
 int heightTable;
