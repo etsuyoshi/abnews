@@ -66,11 +66,11 @@ int heightUnit;
             
 //            NSLog(@"color = %f",(double)i/(double)[arrTable count]);
             //temporary-color:実際には以下のswitch-caseで個別に指定する
-            ((UILabel *)[arrLabel lastObject]).backgroundColor =
-            [UIColor colorWithRed:(double)i/(double)[arrTable count]
-                            green:0
-                             blue:1
-                            alpha:0.5f];
+//            ((UILabel *)[arrLabel lastObject]).backgroundColor =
+//            [UIColor colorWithRed:(double)i/(double)[arrTable count]
+//                            green:0
+//                             blue:1
+//                            alpha:0.5f];
             
             ((UILabel *)[arrLabel lastObject]).font = [UIFont systemFontOfSize:12];
             ((UILabel *)[arrLabel lastObject]).textColor = [self getTextColor:i];
@@ -133,16 +133,17 @@ int heightUnit;
     [UIView
      animateWithDuration:0.5f
      animations:^{
-         self.contentOffset =
-         CGPointMake(self.contentOffset.x - widthUnit,
-                     self.contentOffset.y);
+         if(self.noForcus < [self.arrLabel count]-1 &&
+            self.noForcus > 1){//左側にタブがないときはタブ移動しない
+             self.contentOffset =
+             CGPointMake(self.contentOffset.x - widthUnit,
+                         self.contentOffset.y);
+         }
      }
      completion:^(BOOL finished){
          if(finished){
              NSLog(@"content = %d", (int)self.contentOffset.x);
 //             NSLog(@"noStatus = %d", noStatus);
-             
-             
              self.noForcus --;
              [self setLabelColorAll];
          }
@@ -150,13 +151,17 @@ int heightUnit;
 }
 
 -(void)moveRight{
-    NSLog(@"move right from tabbar");
+    NSLog(@"move right from tabbar, %d, %d",
+          self.noForcus,(int)[self.arrLabel count]);
     [UIView
      animateWithDuration:0.5f
      animations:^{
-         self.contentOffset =
-         CGPointMake(self.contentOffset.x + widthUnit,
-                     self.contentOffset.y);
+         if(self.noForcus < [self.arrLabel count]-2 &&
+            self.noForcus > 0){
+             self.contentOffset =
+             CGPointMake(self.contentOffset.x + widthUnit,
+                         self.contentOffset.y);
+         }
      }
      completion:^(BOOL finished){
          if(finished){
